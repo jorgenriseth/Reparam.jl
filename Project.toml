@@ -1,0 +1,13 @@
+name = "Reparam"
+uuid = "c49b29fa-1d3a-4ad9-af7c-a9d9e2a11c6b"
+authors = ["jorgenriseth <jnriseth@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
