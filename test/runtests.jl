@@ -1,6 +1,11 @@
 using Reparam
 using Test
 
-@testset "Reparam.jl" begin
-    # Write your tests here.
+@testset "Interpolation" begin
+    include("test_lagrange.jl")
+    include("test_rbf.jl")
+end
+
+@testset "Gradient Descent" begin
+    include("test_gradient_descent.jl")
 end
