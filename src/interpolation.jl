@@ -11,7 +11,7 @@ end
 function bump(center, param)
     function (x)
         if abs(x - center) < 1. / param
-            return exp(-1.0 / (1.0-(param*(x - center))^2))
+            return exp(-1.0 / (1.0-(param*(x - center))^2)) # * ℯ   # (scaled or not)
         end
         return 0.
     end
@@ -66,7 +66,7 @@ function interpolate(f, N; rbf=gaussian, param=nothing)
         if rbf === gaussian
             param = (N - 1)
         else rbf === bump
-            param = (N - 1) * 0.43
+            param = (N-1) * sqrt(log(2 / (ℯ-1)) / (1 + log(2/ (ℯ-1))))
         end
     end
     

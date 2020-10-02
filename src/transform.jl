@@ -1,13 +1,17 @@
 using LinearAlgebra: norm
-using ForwardDiff: gradient
+using ForwardDiff: derivative
 
 # Define the q-transform for curves (with derivative given)
 function Q_transform(c, cdt)
-    return t -> sqrt(norm(cdt(t))) * c(t)
+    function q(t)
+        return sqrt(norm(cdt(t))) * c(t)
+    end
 end
 
 # Define the q-transform for curves (without derivative given)
 function Q_transform(c)
-    cdt(x) = gradient(c, x)
-    return t -> sqrt(norm(cdt(t))) * c(t)
+    cdt(t) = derivative(c, t)
+    function (t)
+        return sqrt(norm(cdt(t))) * c(t)
+    end
 end

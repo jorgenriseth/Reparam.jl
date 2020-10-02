@@ -1,9 +1,9 @@
 using QuadGK
 
 """ Construct function taking pointwise difference between f and g"""
-function pointwise_difference(f, g)
+function pointwise_distance(f, g)
     function (x)
-        return f(x) - g(x)
+        return norm(f(x) - g(x))
     end
 end
 
@@ -11,14 +11,14 @@ end
 """ Construct function taking piecewise product of f and g """
 function pointwise_product(f, g)
     function (x)
-        f(x) * g(x)
+        f(x) ⋅ g(x)
     end
 end
 
 """ Construct function taking piecewise square of  f"""
 function pointwise_square(f)
     function (x)
-        return f(x)^2 
+        return norm(f(x))^2 
     end
 end
 
@@ -43,8 +43,8 @@ end
 
 
 """ Compute L2-distance between two funciton f and g"""
-function l2_distance(f, g; itegrator=quadgk_adaptive)
-    integrand = pointwise_square(pointwise_difference(f, g))
+function l2_distance(f, g; integrator=quadgk_adaptive)
+    integrand = pointwise_square(pointwise_distance(f, g))
     return sqrt(integrate(integrand, method=integrator))
 end
 
