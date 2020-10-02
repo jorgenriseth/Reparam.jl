@@ -1,9 +1,11 @@
+using Printf
+
 include("functionals.jl")
 """ Algorithm 3.1. Nocedal & Wright Numerical Optimization: Backtracking Line Search
 Simple approach for choosing the step size in a line serach optimization algorithm. The algorithm 
 either takes a selected step lengtho f alphamax, or a short enough step to satisfy sufficient decrease
 condition with constant c."""
-function backtracking(q, r, v, εmax; ρ=0.9, c=0.1, maxiter=100)
+function backtracking(q, r, v, εmax; ρ=0.9, c=0.1, maxiter=100, verbose=false)
     # Initialize step length
     ε = εmax
 
@@ -21,7 +23,9 @@ function backtracking(q, r, v, εmax; ρ=0.9, c=0.1, maxiter=100)
     while l2_distance(q, r ∘ γ)^2 > l(ε) && iter < maxiter
         iter += 1
         ε *= ρ
-        # @printf "Iter %4d: %10.5f vs. %10.5f\n" iter l2_distance(q, r ∘ γ)^2 l(ε)
+        if verbose
+            @printf "Iter %4d: %12.10e vs. %12.10e\n" iter l2_distance(q, r ∘ γ)^2 l(ε)
+        end
     end
 
     # Warn user if backtracking didn't work
@@ -46,5 +50,5 @@ be monotonously increasing over [0, 1]"""
 function max_step_length(v; Nfine=201, alpha=0.95)
     vdt(x) = ForwardDiff.derivative(v, x)
     vi = vdt.(range(0, 1, length=Nfine))
-    return 0.95 / maximum(vi)
+    return 0.999 / maximum(vi)
 end
