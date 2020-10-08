@@ -64,14 +64,16 @@ function interpolate(f, N; rbf=gaussian, param=nothing)
 
     if param === nothing
         if rbf === gaussian
-            param = (N - 1)
+            param = (N-1)
         else rbf === bump
-            param = (N-1) * sqrt(log(2 / (ℯ-1)) / (1 + log(2/ (ℯ-1))))
+            param = (N-1) * 2 * sqrt(log(2 / (ℯ-1)) / (1 + log(2/ (ℯ-1))))
         end
     end
     
     # Create equidistant nodes over [0, 1]
     nodes = range(0, 1, length=N)
+
+    nodes = create_nodes_chebyshev(0, 1, N)
 
     # Create basis, and the linear system to find interpolation weights
     basis = basis_constructor(rbf, nodes, param)
@@ -82,4 +84,18 @@ function interpolate(f, N; rbf=gaussian, param=nothing)
     weights = A \ b
 
     return build_function(weights, basis)
+end
+
+
+"""
+Create a grid of n+1 Chebyshev points on the interval [a, b]. This should
+give the intpolation polybnomial minimizing the max-norm over the interval.
+"""
+function create_nodes_chebyshev(a, b, n)
+    # Get index-row (reversed for increasing nodes)
+    j = n:-1:0
+
+    # Get standardized cheby-nodes, then map to [a, b]
+    nodes = cos.((j.+0.5) * pi / (n+1))
+    return 0.5 * (b - a) .* nodes .+ 0.5 * (b + a)
 end

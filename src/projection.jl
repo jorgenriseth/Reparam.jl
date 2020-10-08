@@ -16,6 +16,13 @@ function project(f, basis)
 end
 
 
+function project_palais(f, N)
+    basis = basis_palais(N)
+    weights = [palais_inner_product(f, bi) for bi in basis]
+    return build_function(weights, basis)
+end
+
+
 """Create a vector containing the fourier sine series with 
 period up to N"""
 function basis_fourier_sine(N)
@@ -68,10 +75,10 @@ function basis_palais(nmax)
     for n in 1:nmax
         if n % 2 == 1
             m = n ÷ 2 + 1
-            push!(basis, x -> (cos(2π*m*x) - 1) / (√2π * m))
+            push!(basis, x -> (cos(2π*m*x) - 1) / (√2 * π * m))
         else
             m = n ÷ 2
-            push!(basis, x -> sin(2π*m*x) / (√2π * m))
+            push!(basis, x -> sin(2π*m*x) / (√2 * π * m))
         end
     end
     return basis
