@@ -1,4 +1,5 @@
 using QuadGK
+using ForwardDiff: derivative
 
 """ Construct function taking pointwise difference between f and g"""
 function pointwise_distance(f, g)
@@ -58,8 +59,8 @@ end
 
 """ Compute the Palais Metric to be used later."""
 function palais_inner_product(f, g; integrator=quadgk_adaptive)
-    fdx(x) = ForwardDiff.derivative(f, x)
-    gdx(x) = ForwardDiff.derivative(g, x)
+    fdx(x) = derivative(f, x)
+    gdx(x) = derivative(g, x)
     integrand = pointwise_product(fdx, gdx)
     return f(0) * g(0) + integrate(integrand, method=integrator)
 end

@@ -17,7 +17,7 @@ function Q_transform(c)
 end
 
 function Q_reparametrization(q, γ)
-    γdt(t) = ForwardDiff.derivative(γ, t)
+    γdt(t) = derivative(γ, t)
     function (t)
         return √(norm(γdt(t))) * q(γ(t))
     end
