@@ -14,7 +14,7 @@ end
 Simple approach for choosing the step size in a line serach optimization algorithm. The algorithm
 either takes a selected step lengtho f alphamax, or a short enough step to satisfy sufficient decrease
 condition with constant c."""
-function backtracking(q, r, v, εmax; config=BacktrackConfig())
+function backtracking(q, r, v, εmax; I=DefaultIntegrator, config=BacktrackConfig())
     # Initialize step length
     ε = εmax
 
@@ -27,18 +27,18 @@ function backtracking(q, r, v, εmax; config=BacktrackConfig())
 
 
     # Get initial values for sufficient decrease condition.
-    E0 = l2_distance(q, r)^2
-    v0 = l2_norm(v)^2
+    E0 = l2_distance(q, r, I=I)^2
+    v0 = l2_norm(v, I=I)^2
 
     l = make_weak_wolfe_line(E0, v0, c)
 
     # Initialize iteration and
     iter = 0
-    while l2_distance(q, ϕ)^2 > l(ε) && iter < maxiter
+    while l2_distance(q, ϕ, I=I)^2 > l(ε) && iter < maxiter
         iter += 1
         ε *= ρ
         if verbose
-            @printf "Iter %4d: %12.10e vs. %12.10e\n" iter l2_distance(q, ϕ)^2 l(ε)
+            @printf "Iter %4d: %12.10e vs. %12.10e\n" iter l2_distance(q, ϕ, I=I)^2 l(ε)
         end
     end
 
@@ -50,7 +50,7 @@ function backtracking(q, r, v, εmax; config=BacktrackConfig())
     return ε
 end
 
-""" Create the lower bound for cost functional for step in the directino of v to be accepted. """
+
 function make_weak_wolfe_line(E0, v_norm, c)
     a = c * v_norm
     function (ε)
@@ -59,8 +59,6 @@ function make_weak_wolfe_line(E0, v_norm, c)
 end
 
 
-""" Find the maximum allowed step size away from the identity element for the function to
-be monotonously increasing over [0, 1]"""
 function max_step_length(v; Nfine=201, alpha=0.99)
     vdt(x) = derivative(v, x)
     vi = vdt.(range(0, 1, length=Nfine))

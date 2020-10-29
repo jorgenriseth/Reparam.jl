@@ -1,32 +1,31 @@
 using FastGaussQuadrature: gausslegendre
+using LinearAlgebra: ⋅
 
-abstract type Integrator end
+abstract type AbstractIntegrator end
 
-""" GaussLegendre Integration with fixed number of quadrature nodes and weights."""
-struct GaussLegendre{T1<:Number, T2<:Integer} <: Integrator
-    interval::Tuple{T1, T1}
-    npoints::T2
+struct GaussLegendre <: AbstractIntegrator
+    N::Int
     weights::Vector{Float64}
     nodes::Vector{Float64}
 end
 
 
-function GaussLegendre(interval, npoints)
-    a, b = interval
-    nodes, weights = gausslegendre(npoints)
-    nodes .= (b - a) / 2. * nodes .+ (b + a)/ 2.
-    return GaussLegendre(interval, npoints, weights, nodes)
+# Constsructor
+function GaussLegendre(N)
+    nodes, weights = gausslegendre(N)
+    nodes .= 0.5 * nodes .+ 0.5 # Translate nodes from [-1, 1] to [0, 1]
+    return GaussLegendre(N, weights, nodes)
 end
 
 
+# Default Instance
+DefaultIntegrator = GaussLegendre(1000)
 
-function (I::GaussLegendre)(f::Function)
-    out::Float64 = 0.0
-    for i in 1:I.npoints
+
+function integrate(f, I::AbstractIntegrator)
+    out = 0.0
+    for i in 1:I.N
         out += f(I.nodes[i]) * I.weights[i]
     end
-    out * (I.interval[2] - I.interval[1]) / 2.
+    return out * 0.5
 end
-
-
-DefaultIntegrator = GaussLegendre((0, 1), 1000)
