@@ -1,34 +1,31 @@
 using Plots
 
-
 # Define a simple plotting function for plotting curves in the plane.
-function plot_curve(c; npoints=101, kwargs...)
-    X = range(0, 1, length=npoints)
+function plot_curve(c, N; kwargs...)
+    X = range(0, 1, length=N)
     cx = [c(xi)[1] for xi in X]
     cy = [c(xi)[2] for xi in X]
     plot(cx, cy; kwargs...)
 end
 
 # Define a simple plotting function for plotting curves in the plane.
-function plot_curve!(c; npoints=101, kwargs...)
-    X = range(0, 1, length=npoints)
+function plot_curve!(c, N; kwargs...)
+    X = range(0, 1, length=N)
     cx = [c(xi)[1] for xi in X]
     cy = [c(xi)[2] for xi in X]
     plot!(cx, cy; kwargs...)
 end
 
-# Define a simple plotting function for plotting curves in the plane.
-function plot_curve(c, X; kwargs...)
-    cx = [c(xi)[1] for xi in X]
-    cy = [c(xi)[2] for xi in X]
-    plot(cx, cy; kwargs...)
+
+function plot_curve(c, n, N; kwargs...)
+    plot_curve(c, n; seriestype=:scatter, kwargs..., label="")
+    plot_curve!(c, N; kwargs...)
 end
 
-# Define a simple plotting function for plotting curves in the plane.
-function plot_curve!(c, X; kwargs...)
-    cx = [c(xi)[1] for xi in X]
-    cy = [c(xi)[2] for xi in X]
-    plot!(cx, cy; kwargs...)
+
+function plot_curve!(c, n, N; kwargs...)
+    plot_curve!(c, n; seriestype=:scatter,kwargs...,  label="")
+    plot_curve!(c, N; kwargs...)
 end
 
 
