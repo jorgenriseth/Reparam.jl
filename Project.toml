@@ -16,6 +16,7 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [compat]
 ForwardDiff = "0.10"
+Parameters = "0.12"
 Plots = "1.7"
 julia = "1"
 
