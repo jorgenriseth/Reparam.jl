@@ -1,13 +1,13 @@
 module Reparam
 
+# Alternative Integrators
+include("integrators.jl")
+export DefaultIntegrator, integrate
 
 # Curve transformations
 include("transform.jl")
 export Q_transform, Q_reparametrization
 
-# Alternative Integrators
-include("integrators.jl")
-export DefaultIntegrator, integrate
 
 # Integration and inner product fo functions
 include("functionals.jl")
@@ -36,5 +36,11 @@ export reparametrize, accumulate_composition, l2_gradient
 # Plotting interfaces for curves. 
 include("plotters.jl")
 export plot_curve, plot_curve!
+
+
+module Surfaces
+include("integrators.jl")
+export GaussLegendre
+end
 
 end #module"

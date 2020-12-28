@@ -14,7 +14,7 @@ end
 Simple approach for choosing the step size in a line serach optimization algorithm. The algorithm
 either takes a selected step lengtho f alphamax, or a short enough step to satisfy sufficient decrease
 condition with constant c."""
-function backtracking(q, r, v, εmax; I=DefaultIntegrator, config=BacktrackConfig())
+function backtracking(q, r, v::BasisExpansion, εmax; I::AbstractIntegrator=DefaultIntegrator, config=BacktrackConfig())
     # Initialize step length
     ε = εmax
 

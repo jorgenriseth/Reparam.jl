@@ -11,8 +11,8 @@ end
 ReparametrizationSolution() = ReparametrizationSolution(Vector{Float64}(), Vector{Function}())
 
 
-function reparametrize(q, r, projector;
-        I=DefaultIntegrator, maxiter=30, verbosity=1, rtol=1e-3, gtol=1e-4, α_step=0.5, lsconfig=BacktrackConfig())
+function reparametrize(q, r, projector::AbstractProjector;
+        I::AbstractIntegrator=DefaultIntegrator, maxiter=30, verbosity=1, rtol=1e-3, gtol=1e-4, α_step=0.5, lsconfig=BacktrackConfig())
     # Create intial parametrization
     id(x) = x
 
@@ -30,7 +30,8 @@ function reparametrize(q, r, projector;
 
         # Choose Step Size
         εinit  = max_step_length(∇E, alpha=α_step)
-        ε = backtracking(q, r, ∇E, εinit, config=lsconfig)
+        #ε = backtracking(q, r, ∇E, εinit, config=lsconfig)
+        ε = εinit / 10.
         γ(x) = x - ε * ∇E(x)
 
         # Update Parametrization
@@ -59,7 +60,7 @@ function reparametrize(q, r, projector;
 end
 
 
-function reparametrize(q, r0, projector, interpolator; I=DefaultIntegrator,
+function reparametrize(q, r0, projector, interpolator; I::AbstractIntegrator=DefaultIntegrator,
     maxiter=50, rtol=1e-3, gtol=1e-3, α_step=0.1, lsconfig=BacktrackConfig(),
     verbosity=1) 
 id(x) = x

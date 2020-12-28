@@ -2,6 +2,9 @@ using FastGaussQuadrature: gausslegendre
 using LinearAlgebra: ⋅
 
 abstract type AbstractIntegrator end
+struct L2Distance end
+struct L2InnerProduct end
+struct L2Norm end
 
 struct GaussLegendre <: AbstractIntegrator
     N::Int
@@ -17,6 +20,30 @@ function GaussLegendre(N)
     return GaussLegendre(N, weights, nodes)
 end
 
+function squarenorm(x::AbstractVector)
+    return x[1]^2 + x[2]^2
+end 
+
+function squarenorm(x)
+    return x^2
+end 
+
+function vecnorm(x::AbstractVector)
+    return sqrt(x[1]^2 + x[2]^2)
+end 
+
+function vecnorm(x)
+    return x
+end 
+
+function vecdot(x::AbstractVector, y::AbstractVector)
+    return  x[1] * y[1] + x[2] * y[2]
+end
+
+function vecdot(x, y)
+    return  x * y 
+end
+
 
 # Default Instance
 DefaultIntegrator = GaussLegendre(1000)
@@ -26,6 +53,39 @@ function integrate(f, I::AbstractIntegrator)
     out = 0.0
     for i in 1:I.N
         out += f(I.nodes[i]) * I.weights[i]
+    end
+    return out * 0.5
+end
+
+
+function (I::GaussLegendre)(f)
+    out = 0.0
+    for i in 1:I.N
+        out += f(I.nodes[i]) * I.weights[i]
+    end
+    return out * 0.5
+end
+
+function (I::GaussLegendre)(f, F::L2Norm)
+    out = 0.0
+    for i in 1:I.N
+        out += squarenorm(f(I.nodes[i])) * I.weights[i]
+    end
+    return sqrt(out * 0.5)
+end
+
+function (I::GaussLegendre)(f, g, F::L2Distance)
+    out = 0.0
+    for i in 1:I.N
+        out += squarenorm(f(I.nodes[i]) - g(I.nodes[i])) * I.weights[i]
+    end
+    return sqrt(out * 0.5)
+end
+
+function (I::GaussLegendre)(f, g, F::L2InnerProduct)
+    out = 0.0
+    for i in 1:I.N
+        out += vecdot(f(I.nodes[i]),  g(I.nodes[i])) * I.weights[i]
     end
     return out * 0.5
 end

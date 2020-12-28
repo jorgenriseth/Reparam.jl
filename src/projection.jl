@@ -7,13 +7,12 @@ struct OrthogonalProjector{T <: BasisFunction} <: AbstractProjector
 end
 
 # Constructors
-OrthogonalProjector(basis) = OrthogonalProjector(basis, length(basis), DefaultIntegrator)
-OrthogonalProjector(basis, I) = OrthogonalProjector(basis, length(basis), I)
-
+OrthogonalProjector(basis; I::AbstractIntegrator=DefaultIntegrator) = OrthogonalProjector(basis, length(basis), I)
 
 # Interfaces for projectors
-FourierProjector(N) = OrthogonalProjector(FourierSineBasis(N))
-JacobiProjector(N) = OrthogonalProjector(JacobiBasis(N))
+FourierProjector(N; I::AbstractIntegrator=DefaultIntegrator) = OrthogonalProjector(FourierSineBasis(N), I=I)
+JacobiProjector(N; I::AbstractIntegrator=DefaultIntegrator) = OrthogonalProjector(JacobiBasis(N), I=I)
+
 
 function project(f, P::OrthogonalProjector)
     W = [l2_inner_product(f, bi; I=P.I) for bi in P.basis]
