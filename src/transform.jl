@@ -1,6 +1,38 @@
-using ForwardDiff: derivative
+using ForwardDiff: derivative, GradientConfig, Chunk
 using LinearAlgebra: norm
 
+# Q-transform and functions 
+struct Qmap{T<:Function} <: Function
+    c::T
+end
+
+#Qmap(c::Function) = Qmap(c)
+
+function (q::Qmap)(x)
+    return sqrt(vecnorm(derivative(q.c, x))) * q.c(x)
+end
+
+# function Qmap(c::Function, dc::Function)
+#     function (x)
+#         return sqrt(derivative(x, c)) * c(x)
+#     end
+# end
+
+# Add qmap-diffeomorphism pair
+struct ReparametrizedQmap{T1 <: Qmap, T2<:Diffeomorphism} <: Function
+    q::T1
+    γ::T2
+end
+
+ReparametrizedQmap(q, γ) = ReparametrizedQmap(q, γ)
+
+function (Q::ReparametrizedQmap)(x)
+    return sqrt(derivative(Q.γ, x)) * Q.q(Q.γ(x))
+end
+
+function update!(Q::ReparametrizedQmap, φ::Reparametrization)
+    update!(Q.γ, φ)
+end
 
 function Q_transform(c)
     cdt(t) = derivative(c, t)

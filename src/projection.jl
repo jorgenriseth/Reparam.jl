@@ -15,6 +15,20 @@ JacobiProjector(N; I::AbstractIntegrator=DefaultIntegrator) = OrthogonalProjecto
 
 
 function project(f, P::OrthogonalProjector)
-    W = [l2_inner_product(f, bi; I=P.I) for bi in P.basis]
+    W = [P.I(f, bi, L2InnerProduct()) for bi in P.basis]
+    return BasisExpansion(W, P.basis)
+end
+
+
+struct PalaisProjector <: AbstractProjector
+    basis::Vector{PalaisBasisFunction}
+    dim::Int
+    I::GaussLegendre
+end
+
+PalaisProjector(N, I::GaussLegendre) = PalaisProjector(PalaisBasis(N), N, I)
+
+function project(f, P::PalaisProjector)
+    W = [P.I(f, bi, PalaisInnerProduct()) for bi in P.basis]
     return BasisExpansion(W, P.basis)
 end

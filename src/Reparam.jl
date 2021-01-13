@@ -2,13 +2,7 @@ module Reparam
 
 # Alternative Integrators
 include("integrators.jl")
-export DefaultIntegrator, integrate
-
-# Curve transformations
-include("transform.jl")
-export Q_transform, Q_reparametrization
-
-
+export DefaultIntegrator, integrate, GaussLegendre
 # Integration and inner product fo functions
 include("functionals.jl")
 export l2_norm, l2_distance, l2_inner_product
@@ -24,6 +18,14 @@ export RBFInterpolator, interpolate
 # Include function projection methods 
 include("projection.jl")
 export FourierProjector, JacobiProjector
+
+# Create Diffeomorphism Struct
+include("diffeomorphism.jl")
+export Diffeomorphism, Reparametrization
+
+# Curve transformations
+include("transform.jl")
+export Q_transform, Q_reparametrization, Qmap
 
 # Linesearch and backtracking algorithm
 include("linesearch.jl")

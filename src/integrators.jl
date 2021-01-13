@@ -1,10 +1,13 @@
 using FastGaussQuadrature: gausslegendre
 using LinearAlgebra: ⋅
+using ForwardDiff: derivative
 
 abstract type AbstractIntegrator end
+abstract type Operator end
 struct L2Distance end
 struct L2InnerProduct end
 struct L2Norm end
+struct PalaisInnerProduct end 
 
 struct GaussLegendre <: AbstractIntegrator
     N::Int
@@ -60,7 +63,8 @@ end
 
 function (I::GaussLegendre)(f)
     out = 0.0
-    for i in 1:I.N
+    
+    @inbounds @simd for i in 1:I.N
         out += f(I.nodes[i]) * I.weights[i]
     end
     return out * 0.5
@@ -68,7 +72,8 @@ end
 
 function (I::GaussLegendre)(f, F::L2Norm)
     out = 0.0
-    for i in 1:I.N
+    
+    @inbounds @simd for i in 1:I.N
         out += squarenorm(f(I.nodes[i])) * I.weights[i]
     end
     return sqrt(out * 0.5)
@@ -76,7 +81,8 @@ end
 
 function (I::GaussLegendre)(f, g, F::L2Distance)
     out = 0.0
-    for i in 1:I.N
+    
+    @inbounds @simd for i in 1:I.N
         out += squarenorm(f(I.nodes[i]) - g(I.nodes[i])) * I.weights[i]
     end
     return sqrt(out * 0.5)
@@ -84,8 +90,20 @@ end
 
 function (I::GaussLegendre)(f, g, F::L2InnerProduct)
     out = 0.0
-    for i in 1:I.N
+    
+    @inbounds @simd for i in 1:I.N
         out += vecdot(f(I.nodes[i]),  g(I.nodes[i])) * I.weights[i]
+    end
+    return out * 0.5
+end
+
+function (I::GaussLegendre)(f, g, F::PalaisInnerProduct)
+    df(x) = derivative(f, x)
+    dg(x) = derivative(g, x)
+    out = 0.0
+    
+    @inbounds @simd for i in 1:I.N
+        out += vecdot(df(I.nodes[i]),  dg(I.nodes[i])) * I.weights[i]
     end
     return out * 0.5
 end

@@ -24,6 +24,10 @@ function (BE::BasisExpansion)(x)
     return out
 end
 
+function rescale!(BE::BasisExpansion, a)
+    BE.W .*= a
+end
+
 
 struct FourierSineBasisFunction <: BasisFunction
     n::Int
@@ -60,25 +64,27 @@ end
 FourierSineBasis(N) = [FourierSineBasisFunction(n) for n in 1:N]
 JacobiBasis(N) = [JacobiBasisFunction(n) for n in 0:N-1]
 
-# struct PalaisBasisFunction <: BasisFunction
-#     n::Int
-#     label::String
+struct PalaisBasisFunction <: BasisFunction
+    n::Int
+    label::String
 
-#     function PalaisBasisFunction(m::Int, label::String)
-#         @assert label in ["cos", "sin"] "label must be of type 'sin' or 'cos'."
-#         new(m, label)
-#     end
-# end
+    function PalaisBasisFunction(m::Int, label::String)
+        @assert label in ["cos", "sin"] "label must be of type 'sin' or 'cos'."
+        new(m, label)
+    end
+end
 
-# # Alternative constructor with single argument, choosing type based on odd/even
-# function PalaisBasisFunction(n::Int)
-#     n % 2 == 0 ? PalaisBasisFunction(n ÷ 2, "sin") : PalaisBasisFunction(n ÷ 2 + 1, "cos")
-# end
+# Alternative constructor with single argument, choosing type based on odd/even
+function PalaisBasisFunction(n::Int)
+    n % 2 == 0 ? PalaisBasisFunction(n ÷ 2, "sin") : PalaisBasisFunction(n ÷ 2 + 1, "cos")
+end
 
-# """ Function Evaluation of PalaisBasisFunction """
-# function (p::PalaisBasisFunction)(x)
-#     if p.label == "sin"
-#         return sin(2π * p.n * x) / (√2 * π * p.n)
-#     end
-#     return (cos(2π * p.n * x) - 1) / (√2 * π * p.n)
-# end
+""" Function Evaluation of PalaisBasisFunction """
+function (p::PalaisBasisFunction)(x)
+    if p.label == "sin"
+        return sin(2π * p.n * x) / (√2 * π * p.n)
+    end
+    return (cos(2π * p.n * x) - 1) / (√2 * π * p.n)
+end
+
+PalaisBasis(N) = [PalaisBasisFunction(n) for n in 1:N]

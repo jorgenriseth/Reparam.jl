@@ -35,9 +35,9 @@ end
 
 
 function interpolate(f, IP::Interpolator)
-        IP.b .= f.(IP.nodes)
-        IP.w .= IP.M \ IP.b
-        return BasisExpansion(IP.w, IP.basis)
+    IP.b .= f.(IP.nodes)
+    IP.w .= IP.M \ IP.b
+    return BasisExpansion(IP.w, IP.basis)
 end
 
 
