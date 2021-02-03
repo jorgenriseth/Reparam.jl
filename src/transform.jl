@@ -1,5 +1,5 @@
-using ForwardDiff: derivative, GradientConfig, Chunk
-using LinearAlgebra: norm
+using ForwardDiff: derivative, GradientConfig, Chunk, jacobian
+using LinearAlgebra: ×, det, norm
 
 # Q-transform and functions 
 struct Qmap{T<:Function} <: Function
@@ -24,15 +24,10 @@ struct ReparametrizedQmap{T1 <: Qmap, T2<:Diffeomorphism} <: Function
     γ::T2
 end
 
-ReparametrizedQmap(q, γ) = ReparametrizedQmap(q, γ)
-
 function (Q::ReparametrizedQmap)(x)
     return sqrt(derivative(Q.γ, x)) * Q.q(Q.γ(x))
 end
 
-function update!(Q::ReparametrizedQmap, φ::Reparametrization)
-    update!(Q.γ, φ)
-end
 
 function Q_transform(c)
     cdt(t) = derivative(c, t)
@@ -63,4 +58,37 @@ function Q_reparametrization(q, γ, FD::FiniteDifference)
     function (x)
         return √norm((γ(x+FD.h) - γ(x-FD.h))/(2* FD.h)) * q(γ(x))
     end
+end
+
+
+
+struct Qmap2D{T <: Function} <: Function
+    f::T
+end
+
+function (q::Qmap2D)(x)
+    Df = jacobian(q.f, x)
+    return sqrt(norm(Df[:, 1] × Df[:, 2])) * q.f(x)
+end
+
+function area_scaling(f::Function)
+    function (x)
+        Df = jacobian(f, x)
+        return norm(Df[:, 1] × Df[:, 2])
+    end
+end
+
+struct ReparametrizedQmap2D{T1 <: Qmap2D, T2 <: Diffeomorphism} <: Function
+    q::T1
+    γ::T2
+end
+
+function (rn::ReparametrizedQmap2D)(x)
+    return sqrt(det(jacobian(rn.γ, x))) * rn.q(rn.γ(x))
+end
+
+ReparametrizedQmap(q::Qmap2D, γ) = ReparametrizedQmap2D(q, γ)
+
+function update!(Q::T, φ::Reparametrization) where T<:Union{ReparametrizedQmap, ReparametrizedQmap2D}
+    update!(Q.γ, φ)
 end

@@ -30,10 +30,10 @@ function reparametrize(q, r, projector::AbstractProjector;
         ∇E = project(δE, projector)
 
         # Choose Step Size
-        εinit  = max_step_length(∇E, alpha=α_step)
-        ε = backtracking(q, rn, ∇E, εinit, I, config=lsconfig)
-        #ε = εinit * 0.1
-        rescale!(∇E, ε)
+        εinit  = max_step_length(∇E, alpha=α_step) # Start Here 
+        ε = backtracking(q, rn, ∇E, εinit, I, config=lsconfig) # Update to accecpt Qmap2d
+        # εinit = α_step
+        # ε = α_step; rescale!(∇E, ε)
         γ = Reparametrization(∇E)
 
         update!(rn, γ)
@@ -125,10 +125,16 @@ end
 
 function l2_gradient(q, r)
     # Get the derivatives of the curves q, r, and compute the gradient of the cost function
-    qdt(t) = derivative(q, t)
-    rdt(t) = derivative(r, t)
+    # qdt(t) = derivative(q, t)
+    # rdt(t) = derivative(r, t)
     function (t)
-        return (r(t)⋅qdt(t) - q(t)⋅rdt(t))
+        return r(t)⋅derivative(q, t) - q(t) ⋅ derivative(r, t)
+    end
+end
+
+function l2_gradient(q::Qmap2D, r::Union{Qmap2D, ReparametrizedQmap2D})
+    function (t)
+        return jacobian(q, t)' * r(t) - jacobian(r, t)' * q(t)
     end
 end
 

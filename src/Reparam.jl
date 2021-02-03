@@ -3,6 +3,11 @@ module Reparam
 # Alternative Integrators
 include("integrators.jl")
 export DefaultIntegrator, integrate, GaussLegendre
+
+include("integrators2D.jl")
+export GaussLegendre2D
+
+
 # Integration and inner product fo functions
 include("functionals.jl")
 export l2_norm, l2_distance, l2_inner_product
@@ -10,6 +15,9 @@ export l2_norm, l2_distance, l2_inner_product
 # And the bases for subspaces to project onto
 include("basis.jl")
 export JacobiBasis, FourierSineBasis, GaussianRadialBasis
+
+include("basis2D.jl")
+export FourierVectorBasis
 
 # Function interpolation methods
 include("interpolation.jl")
@@ -39,6 +47,9 @@ export reparametrize, accumulate_composition, l2_gradient
 include("plotters.jl")
 export plot_curve, plot_curve!
 
+
+# Surfaces
+export GaussLegendre2D
 
 module Surfaces
 include("integrators.jl")

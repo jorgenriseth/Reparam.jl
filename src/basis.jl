@@ -17,7 +17,7 @@ end
 
 # Caller
 function (BE::BasisExpansion)(x)
-    out = 0.0
+    out = zero(x)
     for i in 1:BE.dim
         out += BE.W[i] * BE.B[i](x)
     end

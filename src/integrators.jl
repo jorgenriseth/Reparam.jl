@@ -49,7 +49,7 @@ end
 
 
 # Default Instance
-DefaultIntegrator = GaussLegendre(1000)
+DefaultIntegrator = GaussLegendre(128)
 
 
 function integrate(f, I::AbstractIntegrator)
