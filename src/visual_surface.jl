@@ -1,6 +1,6 @@
-using PyPlot: plot_surface
+using PyPlot
 
-function plot_parametric_surface(func; n_points=101, axis_title="", axis=nothing, camera=(25, -135), colorfunc=nothing, rel_colorfunc=nothing, colormap="viridis", kwargs...)
+function plot_parametric_surface(func; n_points=101, axis_title="", axis=nothing, camera=(25, -135), colorfunc=nothing, rel_colorfunc=nothing, colormap="jet", kwargs...)
     # Plot Data
     xs = ys = range(0, 1, length=n_points)
 
@@ -26,7 +26,7 @@ function plot_parametric_surface(func; n_points=101, axis_title="", axis=nothing
 
     if axis === nothing
         fig = figure(figsize=(8, 8))
-        plot_surface(fx, fy, fz, rcount=100, ccount=100; kwargs...)
+        plot_surface(fx, fy, fz; kwargs...)
         xlabel("x")
         ylabel("y")
         zlabel("z")
@@ -35,7 +35,7 @@ function plot_parametric_surface(func; n_points=101, axis_title="", axis=nothing
         return fig
     end
 
-    axis.plot_surface(fx, fy, fz, rcount=200, ccount=200; kwargs...)
+    axis.plot_surface(fx, fy, fz; kwargs...)
     axis.set_ylabel("y")
     axis.set_zlabel("z")
     axis.set_xlabel("x")

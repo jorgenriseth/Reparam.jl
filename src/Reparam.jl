@@ -21,7 +21,7 @@ export RBFInterpolator, interpolate
 
 # Include function projection methods 
 include("projection.jl")
-export FourierProjector, JacobiProjector, PalaisProjector
+export FourierProjector, JacobiProjector, PalaisProjector, FourierVectorProjector
 
 # Create Diffeomorphism Struct
 include("diffeomorphism.jl")
