@@ -20,6 +20,7 @@ ForwardDiff = "0.10"
 Parameters = "0.12"
 Plots = "1.7"
 QuadGK = "2.4"
+SpecialFunctions = "1.2"
 julia = "1"
 
 [extras]
