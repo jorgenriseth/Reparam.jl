@@ -1,4 +1,4 @@
-using PyPlot
+using PyPlot: plot_surface
 
 function plot_parametric_surface(func; n_points=101, axis_title="", axis=nothing, camera=(25, -135), colorfunc=nothing, rel_colorfunc=nothing, colormap="viridis", kwargs...)
     # Plot Data
