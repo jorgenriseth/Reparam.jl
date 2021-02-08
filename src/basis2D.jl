@@ -11,6 +11,7 @@ struct FourierVectorBasisFunction <: BasisFunction
     end
 end
 
+
 function (v::FourierVectorBasisFunction)(x)
     if v.direction == "x"
         if v.label == "sin"
@@ -31,6 +32,7 @@ function (v::FourierVectorBasisFunction)(x)
     end
     return error("Invalid configuration in basisfunction")
 end
+
 
 function FourierVectorBasis(N)
     basis = FourierVectorBasisFunction[]
