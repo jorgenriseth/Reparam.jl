@@ -16,6 +16,12 @@ function project(f, P::OrthogonalProjector)
     return BasisExpansion(W, P.basis)
 end
 
+function project(f::Vector, P::Matrix)
+    return P * f
+end
+
+
+
 
 # Interfaces for projectors
 FourierVectorProjector(N; I::GaussLegendre2D=DefaultIntegrator2D) = OrthogonalProjector(FourierVectorBasis(N), 2 * (2N^2 + N), I)
