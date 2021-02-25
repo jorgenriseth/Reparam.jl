@@ -17,7 +17,7 @@ SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 [compat]
 FastGaussQuadrature = "0.4"
 ForwardDiff = "0.10"
-Jacobi = "0.4"
+Jacobi = "0.4, 0.5"
 Parameters = "0.12"
 Plots = "1.7"
 QuadGK = "2.4"
